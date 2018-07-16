@@ -20,12 +20,7 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
-project(hdcpsdk C CXX)
-
-set(HDCP_CXX_FLAGS -fPIE -fPIC -pie -z,noexecstack -z,relro -z,now -Wall -Wformat -Wformat-security -std=c++11)
-set(HDCP_C_FLAGS -fPIE -fPIC -pie -z,noexecstack -z,relro -z,now -Wall -Wformat -Wformat-security)
-
-add_definitions(-DLINUX)
+project(hdcpsdk CXX)
 
 find_package(Threads REQUIRED)
 
@@ -40,6 +35,7 @@ add_library(${PROJECT_NAME}
     sessionmanager.cpp)
 
 target_compile_options(${PROJECT_NAME} PRIVATE ${HDCP_CXX_FLAGS})
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS ${HDCP_LD_FLAGS})
 
 target_link_libraries(${PROJECT_NAME}
     ${CMAKE_THREAD_LIBS_INIT}

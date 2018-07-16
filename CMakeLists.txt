@@ -20,8 +20,21 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
-set(HDCP_CXX_FLAGS -fPIE -fPIC -pie -z,noexecstack -z,relro -z,now -Wall -Wformat -Wformat-security -std=c++11)
-set(HDCP_C_FLAGS -fPIE -fPIC -pie -z,noexecstack -z,relro -z,now -Wall -Wformat -Wformat-security)
+set(HDCP_COMMON_COMPILE_FLAGS
+    -O2
+    -D_FORTIFY_SOURCE=2
+    -fstack-protector-all
+    -foptimize-strlen
+    -fPIE
+    -fPIC
+    -Wall
+    -Wformat
+    -Wformat-security
+)
+
+set(HDCP_C_FLAGS ${HDCP_COMMON_COMPILE_FLAGS})
+set(HDCP_CXX_FLAGS ${HDCP_COMMON_COMPILE_FLAGS} -std=c++11)
+set(HDCP_LD_FLAGS "-z noexecstack -z relro -z now -pie") 
 
 add_definitions(-DLINUX)
 
@@ -46,9 +59,6 @@ endif ()
 
 if (DEFINED CMAKE_BUILD_TYPE AND "${CMAKE_BUILD_TYPE}" STREQUAL "Release")
     message(STATUS "cmake build type is \"${CMAKE_BUILD_TYPE}\"")
-
-    set(HDCP_CXX_FLAGS ${HDCP_CXX_FLAGS} -O2 -D_FORTIFY_SOURCE=2)
-    set(HDCP_C_FLAGS ${HDCP_C_FLAGS} -O2 -D_FORTIFY_SOURCE=2)
 endif ()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")

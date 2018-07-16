@@ -48,6 +48,7 @@ add_executable(${PROJECT_NAME}
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE ${HDCP_CXX_FLAGS})
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS ${HDCP_LD_FLAGS})
 
 target_link_libraries(${PROJECT_NAME}
     ${OPENSSL_LIBRARIES}

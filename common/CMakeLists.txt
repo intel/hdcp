@@ -20,10 +20,7 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
-set(HDCP_CXX_FLAGS -fPIE -fPIC -pie -z,noexecstack -z,relro -z,now -Wall -Wformat -Wformat-security -std=c++11)
-set(HDCP_C_FLAGS -fPIE -fPIC -pie -z,noexecstack -z,relro -z,now -Wall -Wformat -Wformat-security)
-
-project(common C CXX)
+project(common CXX)
 
 find_package(OpenSSL REQUIRED)
 find_package(Threads REQUIRED)
@@ -38,3 +35,4 @@ add_library(${PROJECT_NAME}
     socketdata.cpp)
 
 target_compile_options(${PROJECT_NAME} PRIVATE ${HDCP_CXX_FLAGS})
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS ${HDCP_LD_FLAGS})
