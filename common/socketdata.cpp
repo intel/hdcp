@@ -43,7 +43,7 @@ SocketData::SocketData(void) :
 
     for (i = 0; i < NUM_PHYSICAL_PORTS_MAX; ++i) {
         Ports[i].Id     = 0;
-        Ports[i].Status = 0;
+        Ports[i].status = 0;
     }
 }
 
