@@ -194,7 +194,7 @@ HDCP_STATUS HdcpSession::EnumerateDisplay(PortList *portList)
     for (uint32_t i = 0; i < data.PortCount; ++i)
     {
         portList->Ports[i].Id     = data.Ports[i].Id;
-        portList->Ports[i].Status = data.Ports[i].Status;
+        portList->Ports[i].status = data.Ports[i].status;
     }
 
     HDCP_FUNCTION_EXIT(HDCP_STATUS_SUCCESSFUL);
@@ -256,9 +256,9 @@ HDCP_STATUS HdcpSession::GetStatus(
     }
 
     // Fill the port status
-    *portStatus = data.SinglePort.Status;
+    *portStatus = data.SinglePort.status;
 
-    HDCP_NORMALMESSAGE("session port Status %d", data.SinglePort.Status);
+    HDCP_NORMALMESSAGE("session port Status %d", data.SinglePort.status);
 
     HDCP_FUNCTION_EXIT(HDCP_STATUS_SUCCESSFUL);
     return HDCP_STATUS_SUCCESSFUL;

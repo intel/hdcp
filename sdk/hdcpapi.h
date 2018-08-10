@@ -95,7 +95,7 @@ typedef enum _PORT_EVENT
 typedef struct _Port
 {
     uint32_t        Id;
-    PORT_STATUS     Status;
+    PORT_STATUS     status;
     PORT_EVENT      Event;
 } Port;
 

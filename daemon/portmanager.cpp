@@ -656,7 +656,7 @@ int32_t PortManager::EnumeratePorts(
     for (uint32_t i = 0; i < NUM_PHYSICAL_PORTS_MAX; ++i)
     {
         portList[i].Id = 0;
-        portList[i].Status = PORT_STATUS_DISCONNECTED;
+        portList[i].status = PORT_STATUS_DISCONNECTED;
     }
 
     portCount = 0;
@@ -684,7 +684,7 @@ int32_t PortManager::EnumeratePorts(
         if (connector->connection == DRM_MODE_CONNECTED)
         {
             portList[portCount].Id = drmObject->GetPortId();
-            portList[portCount].Status = PORT_STATUS_CONNECTED;
+            portList[portCount].status = PORT_STATUS_CONNECTED;
             portCount++;
         }
 
