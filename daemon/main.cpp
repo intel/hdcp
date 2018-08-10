@@ -42,6 +42,7 @@
 #include "portmanager.h"
 #include "socketdata.h"
 #include "daemon.h"
+#include "display_window_util.h"
 
 FILE *dmLog = nullptr;
 
@@ -240,6 +241,8 @@ int32_t main(void)
         return 1;
     }
 
+    util_create_display(0);
+
 #ifdef HDCP_LOG_FILE
     if (nullptr == dmLog)
     {
@@ -269,6 +272,8 @@ int32_t main(void)
         fclose(dmLog);
         dmLog = nullptr;
     }
+
+    util_destroy_display(0);
 
     HDCP_FUNCTION_EXIT(ret);
     return ret;
