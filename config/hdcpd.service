@@ -1,0 +1,10 @@
+[Unit]
+Description=hdcp daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/hdcpd
+User=root
+
+[Install]
+WantedBy=multi-user.target

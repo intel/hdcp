@@ -35,6 +35,7 @@
 #include <dirent.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <iostream>
 
 #include "hdcpdef.h"
 #include "srm.h"
@@ -43,6 +44,45 @@
 #include "daemon.h"
 
 FILE *dmLog = nullptr;
+
+bool AlreadyRunning()
+{
+    const std::string pidFile = "/var/run/hdcpd.pid";
+
+    int fd = open(pidFile.c_str(),
+                O_RDWR | O_CREAT,
+                S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    if (fd < 0)
+    {
+        HDCP_ASSERTMESSAGE("Could not open pid file : %s\n", pidFile.c_str());
+        close(fd);
+        return true;
+    }
+
+    struct flock fl;
+    fl.l_type = F_WRLCK;
+    fl.l_start = 0;
+    fl.l_whence = SEEK_SET;
+    fl.l_len = 0;
+
+    if (fcntl(fd, F_SETLK, &fl) < 0)
+    {
+        HDCP_ASSERTMESSAGE("Could not lock pid file\n");
+        close(fd);
+        return true;
+    }
+
+    std::string pid = std::to_string(getpid());
+    if (write(fd, pid.c_str(), pid.length()) < 0)
+    {
+        HDCP_ASSERTMESSAGE("Could not write pid file\n");
+        close(fd);
+        return true;
+    }
+
+    close(fd);
+    return false;
+}
 
 int32_t daemon_init(void)
 {
@@ -170,6 +210,12 @@ int32_t main(void)
 
     int32_t ret = -1;
     struct passwd *mediaId = getpwnam("media");
+
+    if (AlreadyRunning())
+    {
+        HDCP_ASSERTMESSAGE("hdcp aleady already running\n");
+        return 1;
+    }
 
     if (nullptr == mediaId)
     {

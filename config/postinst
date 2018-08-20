@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl enable hdcpd.service
+systemctl start hdcpd.service
