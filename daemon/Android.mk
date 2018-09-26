@@ -24,7 +24,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_CPPFLAGS :=                                           \
+LOCAL_CPPFLAGS := \
     -DANDROID \
     -DANDROID_VERSION=800 \
     -DHDCP_LOG_TAG="\"HDCPD\""
