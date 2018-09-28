@@ -38,6 +38,12 @@
 
 #define APP_ID_INTERNAL     0
 
+#ifdef ANDROID
+#define HDCP_PIDFILE    "/data/hdcp/hdcpd.pid"
+#else
+#define HDCP_PIDFILE    "/var/run/hdcpd.pid"
+#endif
+
 class HdcpDaemon
 {
 private:
