@@ -47,12 +47,8 @@ FILE *dmLog = nullptr;
 
 bool AlreadyRunning()
 {
-#ifdef ANDROID
-    const std::string pidFile = "/data/hdcp/hdcpd.pid";
-#else
-    const std::string pidFile = "/var/run/hdcpd.pid";
-#endif
-
+    const std::string pidFile = HDCP_PIDFILE;
+    
     int fd = open(pidFile.c_str(),
                 O_RDWR | O_CREAT,
                 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
