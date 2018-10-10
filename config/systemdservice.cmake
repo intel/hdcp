@@ -18,37 +18,30 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-cmake_minimum_required(VERSION 2.8.12)
+include(FindPkgConfig)
 
-project(hdcpd CXX)
+pkg_check_modules(SYSTEMD "systemd")
 
-find_package(Threads REQUIRED)
-find_package(OpenSSL REQUIRED)
-pkg_check_modules(LIBDRM REQUIRED libdrm)
+if (SYSTEMD_FOUND AND "${SYSTEMD_SERVICES_INSTALL_DIR}" STREQUAL "")
+    execute_process(COMMAND ${PKG_CONFIG_EXECUTABLE}
+        --variable=systemdsystemunitdir systemd
+        OUTPUT_VARIABLE SYSTEMD_SERVICES_INSTALL_DIR)
+    string(REGEX REPLACE "[ \t\n]+" "" SYSTEMD_SERVICES_INSTALL_DIR
+            "${SYSTEMD_SERVICES_INSTALL_DIR}")
+    configure_file(${CMAKE_SOURCE_DIR}/config/hdcpd.service.in
+            ${CMAKE_BINARY_DIR}/hdcpd.service
+            @ONLY)
+    install(FILES ${CMAKE_BINARY_DIR}/hdcpd.service DESTINATION
+            ${SYSTEMD_SERVICES_INSTALL_DIR} COMPONENT cp)
 
-get_filename_component(HDCP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.." REALPATH)
+elseif (NOT SYSTEMD_FOUND AND SYSTEMD_SERVICES_INSTALL_DIR)
+    message (FATAL_ERROR "Variable SYSTEMD_SERVICES_INSTALL_DIR is\
+        defined, but we can't find systemd using pkg-config")
+endif()
 
-include_directories(${OPENSSL_INCLUDE_DIRS})
-include_directories(${LIBDRM_INCLUDE_DIRS})
-include_directories(${HDCP_DIR}/common)
-include_directories(${HDCP_DIR}/sdk)
-include_directories(${HDCP_DIR}/daemon)
-
-add_executable(${PROJECT_NAME}
-    main.cpp
-    daemon.cpp
-    port.cpp
-    srm.cpp
-    portmanager.cpp
-)
-
-target_compile_options(${PROJECT_NAME} PRIVATE ${HDCP_CXX_FLAGS})
-set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS ${HDCP_LD_FLAGS})
-
-target_link_libraries(${PROJECT_NAME}
-    ${OPENSSL_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT}
-    common
-    drm
-    dl
-)
+if (SYSTEMD_FOUND)
+    set(WITH_SYSTEMD "ON")
+    message(STATUS "systemd services install dir: ${SYSTEMD_SERVICES_INSTALL_DIR}")
+else()
+    set(WITH_SYSTEMD "OFF")
+endif (SYSTEMD_FOUND)

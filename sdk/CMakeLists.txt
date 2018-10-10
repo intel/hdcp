@@ -36,6 +36,8 @@ add_library(${PROJECT_NAME}
 
 target_compile_options(${PROJECT_NAME} PRIVATE ${HDCP_CXX_FLAGS})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS ${HDCP_LD_FLAGS})
+set_target_properties(${PROJECT_NAME} PROPERTIES
+                    VERSION ${HDCP_VERSION} SOVERSION ${HDCP_VERSION_MAJOR})
 
 target_link_libraries(${PROJECT_NAME}
     ${CMAKE_THREAD_LIBS_INIT}

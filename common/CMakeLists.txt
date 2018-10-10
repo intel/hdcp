@@ -29,6 +29,7 @@ get_filename_component(HDCP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.." REALPATH)
 include_directories(${HDCP_DIR}/sdk)
 
 add_library(${PROJECT_NAME}
+    STATIC
     clientsock.cpp
     gensock.cpp
     servsock.cpp

@@ -1,0 +1,10 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: @CMAKE_PROJECT_NAME@
+Description: Intel Unified HDCP SDK
+Version: @HDCP_VERSION@
+Libs: -L${libdir} -lhdcpsdk
+Cflags: -I${includedir}

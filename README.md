@@ -29,13 +29,13 @@ The Intel(R) unified HDCP is dependent on kernel space HDCP implementation to pr
 1.  Obtain Linux kernel from https://github.com/freedesktop/drm-tip
 2.  Follow below steps to build and upgrade kernel:
 ```
-$ make ARCH=x86_64 defconfig  
+$ make ARCH=x86_64 defconfig
 $ make ARCH=x86_64 menuconfig
-    # include device driver->Network device driver->USB Network Adapters->the corresponding adapter if you use usb adapter for network hub.  
-    # include drivers->misc drivers->Intel Management Engine Interface & ME Enabled Intel Chipsets & Intel Trusted Execution Enviroment with ME Interface to enable MEI_HDCP for HDCP 2.2 
-$ make -j 
-$ make modules  
-$ sudo make modules_install  
+    # include device driver->Network device driver->USB Network Adapters->the corresponding adapter if you use usb adapter for network hub.
+    # include drivers->misc drivers->Intel Management Engine Interface & ME Enabled Intel Chipsets & Intel Trusted Execution Enviroment with ME Interface to enable MEI_HDCP for HDCP 2.2
+$ make -j
+$ make modules
+$ sudo make modules_install
 $ sudo make install
 ```
 
@@ -49,12 +49,13 @@ $ sudo make install
     |- sdk
     |- common
     |- CMakeLists.txt
+    ...
 ```
-3.
+3. Create build folder, and generate targets in the directory
 ```
 $ cd <workspace>
-$ cmake CMakeLists.txt \
-    -DLIBDRM_INCLUDE_DIRS=/usr/local/include/libdrm
+$ mkdir build; cd build
+$ cmake ../
 ```
 4.  Then run
 ```
@@ -68,8 +69,12 @@ $ sudo make install
 ```
 This will install the following files (e.g. on Ubuntu):
 ```
--- Installing: /usr/lib/x86_64-linux-gnu/libhdcpsdk.so
--- Installing: /usr/bin/hdcpd
+-- Installing: /usr/local/bin/hdcpd
+-- Installing: /usr/local/include/hdcpapi.h
+-- Installing: /usr/local/lib/libhdcpsdk.so
+-- Installing: /usr/local/lib/pkgconfig/libhdcpsdk.pc
+-- Installing: /lib/systemd/system/hdcpd.service
+-- ...
 ```
 
 
