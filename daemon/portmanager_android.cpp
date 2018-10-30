@@ -157,10 +157,9 @@ int32_t setPortProperty_hwcservice(int32_t m_DrmFd,
                    hwcs, drmId, (EHwcsContentType)propValue);
            } else if(propId == drmObject->GetPropertyId(CP_SRM))
            {
-	       //TODO:This is not yet enable in hwcservice
-	       //this can be completed once hwcservice api is available
-	       HwcService_Disconnect(hwcs);
-               ret = EINVAL;
+               HDCP_ASSERTMESSAGE("Set SRM for Display");
+               ret = HwcService_Video_SetHDCPSRM_ForDisplay(hwcs, drmId,
+                   (const int8_t *)&value, size);
            } else
            {
                HwcService_Disconnect(hwcs);
