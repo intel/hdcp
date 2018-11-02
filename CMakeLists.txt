@@ -20,6 +20,8 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
+include(GNUInstallDirs)
+
 add_definitions(-DLINUX)
 
 # Forbid in-tree building
@@ -80,10 +82,14 @@ set(HDCP_VERSION
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+
 
 add_subdirectory(common ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/common)
 add_subdirectory(sdk ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/sdk)
 add_subdirectory(daemon ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/daemon)
+add_subdirectory(daemon/util_wayland ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/daemon/util_wayland)
 
 configure_file(${CMAKE_SOURCE_DIR}/config/libhdcpsdk.pc.in
             ${CMAKE_BINARY_DIR}/libhdcpsdk.pc
@@ -94,15 +100,6 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
-set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
-set(CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
-if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
-  MESSAGE("++ 64 bit architecture")
-  set(CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib64)
-else()
-  MESSAGE("++ 32 bit architecture") 
-  set(CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
-endif()  
 install(PROGRAMS ${CMAKE_BINARY_DIR}/hdcpd
         DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT cp)
 install(FILES ${CMAKE_SOURCE_DIR}/sdk/hdcpapi.h
@@ -115,6 +112,12 @@ install(FILES ${CMAKE_BINARY_DIR}/libhdcpsdk.so.${HDCP_VERSION}
         DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT cp)
 install(FILES ${CMAKE_BINARY_DIR}/libhdcpsdk.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig COMPONENT cp)
+install(FILES ${CMAKE_BINARY_DIR}/libutil_wayland.so
+        DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT cp)
+install(FILES ${CMAKE_BINARY_DIR}/libutil_wayland.so.${HDCP_VERSION_MAJOR}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT cp)
+install(FILES ${CMAKE_BINARY_DIR}/libutil_wayland.so.${HDCP_VERSION}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT cp)
 
 include(${CMAKE_SOURCE_DIR}/config/systemdservice.cmake)
 

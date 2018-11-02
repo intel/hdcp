@@ -42,6 +42,7 @@
 #include "portmanager.h"
 #include "socketdata.h"
 #include "daemon.h"
+#include "display_window_util.h"
 
 FILE *dmLog = nullptr;
 
@@ -207,7 +208,9 @@ out:
 int32_t main(void)
 {
     HDCP_FUNCTION_ENTER;
-
+    
+    // This dir will be used to determine running with IAS or not
+    char *dir = getenv("XDG_RUNTIME_DIR");
     int32_t ret = -1;
     struct passwd *mediaId = getpwnam("media");
 
@@ -239,6 +242,10 @@ int32_t main(void)
     {
         return 1;
     }
+    if(dir)
+    {	    
+    	util_create_display(0);
+    }
 
 #ifdef HDCP_LOG_FILE
     if (nullptr == dmLog)
@@ -268,6 +275,11 @@ int32_t main(void)
     {
         fclose(dmLog);
         dmLog = nullptr;
+    }
+
+    if(dir)
+    {	    
+    	util_destroy_display(0);
     }
 
     HDCP_FUNCTION_EXIT(ret);
