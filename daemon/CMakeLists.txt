@@ -33,13 +33,11 @@ include_directories(${LIBDRM_INCLUDE_DIRS})
 include_directories(${HDCP_DIR}/common)
 include_directories(${HDCP_DIR}/sdk)
 include_directories(${HDCP_DIR}/daemon)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+include_directories(${HDCP_DIR}/daemon/util_wayland)
 
-add_subdirectory(util_wayland ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/util_wayland)
-find_library(UTIL_WAYLAND util_wayland PATHS ${PROJECT_SOURCE_DIR}/util_wayland)
 find_library(WAYLAND_EGL wayland-egl PATHS $ENV{WLD}/lib)
 find_library(WAYLAND_CLIENT wayland-client PATHS $ENV{WLD}/lib)
-set (libs ${WAYLAND_CLIENT} ${UTIL_WAYLAND} ${WAYLAND_EGL})
+set (libs ${WAYLAND_CLIENT}  ${WAYLAND_EGL})
 link_directories( $ENV{WLD}/lib )
 
 add_executable(${PROJECT_NAME}
@@ -60,4 +58,5 @@ target_link_libraries(${PROJECT_NAME}
     common
     drm
     dl
+    util_wayland
 )
