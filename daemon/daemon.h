@@ -38,6 +38,12 @@
 
 #define APP_ID_INTERNAL     0
 
+#ifdef ANDROID
+#define HDCP_PIDFILE    "/data/hdcp/hdcpd.pid"
+#else
+#define HDCP_PIDFILE    "/var/run/hdcpd.pid"
+#endif
+
 class HdcpDaemon
 {
 private:
@@ -82,7 +88,7 @@ public:
     ///
     /// \param[in/out]  data   General message packet, it contains a port list
     ///                         the daemon can use to fill in port information
-    /// \param[out]     sendResponse whether need to send response to SDK or not 
+    /// \param[out]     sendResponse whether need to send response to SDK or not
     /// \return         Nothing (Status is embedded in the SocketData structure)
     ////////////////////////////////////////////////////////////////////////////
     void DispatchCommand(SocketData& data, int32_t appId, bool& sendResponse);
@@ -167,7 +173,7 @@ public:
     /// daemon's local copy if it is newer and valid.
     ////////////////////////////////////////////////////////////////////////////
     void SendSRMData(SocketData& data, uint32_t appId);
-     
+
     ////////////////////////////////////////////////////////////////////////////
     /// \brief      Get current SRM version.
     ///

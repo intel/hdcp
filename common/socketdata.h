@@ -34,8 +34,13 @@
 #define MAX_LISTENER_SOCKET_PATH    64
 
 // socket file used by SDK and daemon
+#ifdef ANDROID
+#define HDCP_DIR_BASE               "/data/hdcp/"
+#define HDCP_DIR_BASE_PERMISSIONS   (S_IRWXU | S_IRWXG)
+#else
 #define HDCP_DIR_BASE               "/var/run/hdcp/"
 #define HDCP_DIR_BASE_PERMISSIONS   (S_IRWXU | S_IRWXG | S_IRWXO)
+#endif
 #define HDCP_SDK_SOCKET_PATH        HDCP_DIR_BASE ".sdk_socket"
 
 typedef enum _HDCP_API_TYPE
