@@ -20,6 +20,8 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
+include(GNUInstallDirs)
+
 add_definitions(-DLINUX)
 
 # Forbid in-tree building
@@ -93,10 +95,6 @@ configure_file(${CMAKE_SOURCE_DIR}/config/libhdcpsdk.pc.in
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-
-set(CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
-set(CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
-set(CMAKE_INSTALL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
 
 install(PROGRAMS ${CMAKE_BINARY_DIR}/hdcpd
         DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT cp)
