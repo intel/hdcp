@@ -1148,15 +1148,15 @@ int32_t PortManager::SetPortProperty(
 {
     HDCP_FUNCTION_ENTER;
 
-    char *dir = getenv("XDG_RUNTIME_DIR");
+    char *ias_env = getenv("XDG_RUNTIME_DIR");
     DrmObject *drmObject = GetDrmObjectByDrmId(drmId);
     if (nullptr == drmObject)
     {
         return ENOENT;
     }
     
-// if dir is NULL means it is not running with IAS
-    if(!dir)
+// if ias_env is NULL means hdcp daemon  is not running with IAS
+    if(!ias_env)
     {
         if (drmSetMaster(m_DrmFd) < 0)
 	{
@@ -1206,7 +1206,7 @@ int32_t PortManager::SetPortProperty(
 	    return EBUSY;
 	}
     }
-    // else case means dir is not NULL (IAS Enviroment)
+    // else case means ias_env is not NULL (IAS Enviroment)
     else
     {
         util_set_content_protection(drmId, *value);

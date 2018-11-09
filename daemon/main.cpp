@@ -209,8 +209,8 @@ int32_t main(void)
 {
     HDCP_FUNCTION_ENTER;
 
-    // This dir will be used to determine running with IAS or not
-    char *dir = getenv("XDG_RUNTIME_DIR");
+    // This ias_env will be used to determine running with IAS or not
+    char *ias_env = getenv("XDG_RUNTIME_DIR");
     int32_t ret = -1;
     struct passwd *mediaId = getpwnam("media");
 
@@ -242,7 +242,7 @@ int32_t main(void)
     {
         return 1;
     }
-    if(dir)
+    if(ias_env)
     {
      util_create_display(0);
     }
@@ -277,7 +277,7 @@ int32_t main(void)
         dmLog = nullptr;
     }
 
-    if(dir)
+    if(ias_env)
     {
      util_destroy_display(0);
     }
