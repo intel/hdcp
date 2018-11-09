@@ -96,7 +96,7 @@ configure_file(${CMAKE_SOURCE_DIR}/config/libhdcpsdk.pc.in
 
 # Set install path
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-   set(CMAKE_INSTALL_PREFIX "/usr/local")
+    set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 
