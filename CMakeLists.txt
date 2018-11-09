@@ -85,7 +85,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 
-
 add_subdirectory(common ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/common)
 add_subdirectory(sdk ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/sdk)
 add_subdirectory(daemon/util_wayland ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/daemon/util_wayland)
