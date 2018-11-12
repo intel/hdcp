@@ -7,7 +7,11 @@ pkg_check_modules(LIBDRM REQUIRED libdrm)
 
 include_directories( ../ )
 include_directories(${LIBDRM_INCLUDE_DIRS})
-include_directories( $ENV{WLD}/include $ENV{WLD}/include/libdrm  ../../external/libdrm ../../external/libdrm/include/drm wl_base )
+include_directories( $ENV{WLD}/include )
+include_directories( $ENV{WLD}/include/libdrm )
+include_directories( ../../external/libdrm )
+include_directories( ../../external/libdrm/include/drm )
+include_directories( wl_base )
 
 
 set (CMAKE_CXX_STANDARD 11)
