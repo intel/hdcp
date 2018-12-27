@@ -34,7 +34,11 @@
 #include "hdcpapi.h"
 #include "port.h"
 
-#define SRM_STORAGE_FILENAME    "/var/run/hdcp/.hdcpsrmlist.bin"
+#ifdef ANDROID
+#define SRM_STORAGE_FILENAME    "/data/hdcp/.hdcpsrmlist.bin"
+#else
+#define SRM_STORAGE_FILENAME    "/var/run/.hdcpsrmlist.bin"
+#endif
 
 #define DSA_SIG_LENGTH          20
 #define SRM_HEADER_LENGTH       5
