@@ -1148,13 +1148,15 @@ int32_t PortManager::SetPortProperty(
 {
     HDCP_FUNCTION_ENTER;
 
+    // This ias_env  will be used to determine running with IAS or not
+    char *ias_env = getenv("XDG_RUNTIME_DIR");
     DrmObject *drmObject = GetDrmObjectByDrmId(drmId);
     if (nullptr == drmObject)
     {
         return ENOENT;
     }
 
-#if 0
+if(ias_env) {
     if (drmSetMaster(m_DrmFd) < 0)
     {
         HDCP_ASSERTMESSAGE("Could not get drm master privilege");
@@ -1202,9 +1204,11 @@ int32_t PortManager::SetPortProperty(
         HDCP_ASSERTMESSAGE("Could not drop drm master privilege");
         return EBUSY;
     }
-#else
+}
+else
+{
     util_set_content_protection(drmId, *value);
-#endif
+}
 
     HDCP_FUNCTION_EXIT(SUCCESS);
     return SUCCESS;
