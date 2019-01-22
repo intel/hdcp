@@ -24,7 +24,8 @@
 #include <stdlib.h>
 
 /* IAS Wayland library for IPC calls from hdcpd to IAS compositor *
- * need to set LD_LIBRARY_PATH where this library located */
+ * need to set LD_LIBRARY_PATH if library is not in standard path *
+ * for example it might be located at /usr/lib64/ias              */
 #define IAS_WL_LIBNAME "libwl_base.so"
 using namespace std;
 
@@ -57,32 +58,37 @@ EGLNativeDisplayType util_create_display(int screen)
 
         lib_hdl = dlopen(IAS_WL_LIBNAME, RTLD_LAZY | RTLD_GLOBAL);
 	if(!lib_hdl) {
-		cerr<<"Couldn't open lib"<<IAS_WL_LIBNAME<<endl;
+		cerr<<"Couldn't open lib "<<IAS_WL_LIBNAME<<endl;
 		return 0;
         }
 
-		/* Find init symbol */
-		init = dlsym(lib_hdl, "init");
-		if(!init) {
-			cerr<<"Couldn't open symbol init"<<endl;
-			dlclose(lib_hdl);
-			return 0;
-		}
+        /* Find init symbol */
+	init = dlsym(lib_hdl, "init");
+	if(!init) {
+		cerr<<"Couldn't open symbol init dlerror "<<dlerror()<<endl;
+		dlclose(lib_hdl);
+		return 0;
+	}
 
-		/* Get a new class pointer by calling this init function */
-		gwl = (global_wl *) ((init_fn) init)();
-		if(!gwl) {
-			cerr<<"Couldn't get a new class pointer"<<endl;
-			dlclose(lib_hdl);
-			return 0;
-		}
+	/* Get a new class pointer by calling this init function */
+	gwl = (global_wl *) ((init_fn) init)();
+	if(!gwl) {
+		cerr<<"Couldn't get a new class pointer"<<endl;
+		dlclose(lib_hdl);
+		return 0;
+	}
 
-		/* Call class's function */
-		ret = gwl->init();
-		gwl->add_reg();
+	/* Call class's function */
+	ret = gwl->init();
+	if(ret == 0) {
+               cerr<<"WL base Class init is failed"<<endl;
+               dlclose(lib_hdl);
+               return 0;
+        }
+	gwl->add_reg();
 
-	stage = CREATE_DISPLAY_DONE;
-	return ret;
+        stage = CREATE_DISPLAY_DONE;
+        return ret;
 }
 
 void util_destroy_display(EGLNativeDisplayType display)
@@ -97,7 +103,7 @@ void util_destroy_display(EGLNativeDisplayType display)
 	/* Find deinit symbol */
 	deinit = dlsym(lib_hdl, "deinit");
 	if(!deinit) {
-		cerr<<"Couldn't open symbol deinit"<<endl;
+		cerr<<"Couldn't open symbol deinit dlerror "<<dlerror()<<endl;
 	} else {
 
 		/* Call deinit symbol to delete the class pointer */
