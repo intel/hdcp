@@ -1156,59 +1156,56 @@ int32_t PortManager::SetPortProperty(
         return ENOENT;
     }
 
-if(ias_env) {
-    if (drmSetMaster(m_DrmFd) < 0)
-    {
-        HDCP_ASSERTMESSAGE("Could not get drm master privilege");
-        return EBUSY;
-    }
-    
-    // If the size isn't sizeof(uint8_t), it means SRM data, need create blob
-    // then set the blob id by drmModeConnectorSetProperty
-    int ret = EINVAL;
-    uint32_t propValue;
-    if (sizeof(uint8_t) != size)
-    {
-        ret = drmModeCreatePropertyBlob(m_DrmFd, value, size, &propValue);
-        if (SUCCESS != ret)
+    if(ias_env) {
+        if (drmSetMaster(m_DrmFd) < 0)
+	{
+	    HDCP_ASSERTMESSAGE("Could not get drm master privilege");
+	    return EBUSY;
+	}
+        // If the size isn't sizeof(uint8_t), it means SRM data, need create blob
+	// then set the blob id by drmModeConnectorSetProperty
+	int ret = EINVAL;
+	uint32_t propValue;
+	if (sizeof(uint8_t) != size)
+	{
+	    ret = drmModeCreatePropertyBlob(m_DrmFd, value, size, &propValue);
+	    if (SUCCESS != ret)
+	    {
+	        HDCP_ASSERTMESSAGE("Could not create blob");
+	        return EBUSY;
+	    }
+	}
+	else
+	{
+	    propValue = *value;
+	}
+        // Set property
+        for (uint32_t i = 0; i < numRetry; ++i)
         {
-            HDCP_ASSERTMESSAGE("Could not create blob");
-            return EBUSY;
-        }
+            ret = drmModeConnectorSetProperty(
+					m_DrmFd,
+					drmObject->GetDrmId(),
+					propId,
+					propValue);
+	    if (SUCCESS == ret)
+	        break;
+	}
+	if (SUCCESS != ret)
+	{
+	    HDCP_ASSERTMESSAGE("Could not set port property");
+	    return EBUSY;
+	}
+        //We must drop master privilege here
+        if (drmDropMaster(m_DrmFd) < 0)
+        {
+            HDCP_ASSERTMESSAGE("Could not drop drm master privilege");
+	    return EBUSY;
+	}
     }
     else
     {
-        propValue = *value;   
+        util_set_content_protection(drmId, *value);
     }
-
-    // Set property
-    for (uint32_t i = 0; i < numRetry; ++i)
-    {
-        ret = drmModeConnectorSetProperty(
-                                m_DrmFd,
-                                drmObject->GetDrmId(),
-                                propId,
-                                propValue);
-        if (SUCCESS == ret)
-            break;
-    }
-    if (SUCCESS != ret)
-    {
-        HDCP_ASSERTMESSAGE("Could not set port property");
-        return EBUSY;
-    }
-
-    //We must drop master privilege here
-    if (drmDropMaster(m_DrmFd) < 0)
-    {
-        HDCP_ASSERTMESSAGE("Could not drop drm master privilege");
-        return EBUSY;
-    }
-}
-else
-{
-    util_set_content_protection(drmId, *value);
-}
 
     HDCP_FUNCTION_EXIT(SUCCESS);
     return SUCCESS;

@@ -46,11 +46,6 @@ typedef void* (*init_fn)();
 typedef void (*deinit_fn)(void *);
 
 
-bool compare(const class_info *first, const class_info *second)
-{
-  return first->level > second->level;
-}
-
 EGLNativeDisplayType util_create_display(int screen)
 {
 	EGLNativeDisplayType ret = 0;
