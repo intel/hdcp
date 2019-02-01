@@ -211,7 +211,8 @@ int32_t main(void)
     int32_t ret = -1;
     struct passwd *mediaId = getpwnam("media");
      // This ias_env will be used to determine running with IAS or not
-    char *ias_env = getenv("XDG_RUNTIME_DIR");
+    char *ias_env = NULL;
+    ias_env = getenv("XDG_RUNTIME_DIR");
 
     if (AlreadyRunning())
     {

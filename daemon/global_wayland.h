@@ -66,7 +66,7 @@ class global_wl {
 				const char *interface, uint32_t version);
 		virtual void registry_handle_global_remove(void *data,
 				struct wl_registry *registry, uint32_t name);
-		virtual void set_content_protection(int crtc, int cp);
+		virtual bool set_content_protection(int crtc, int cp);
 		static void xdg_shell_ping(void *data, struct zxdg_shell_v6 *shell,
 				uint32_t serial);
 		static void modelist_event(void *data,
