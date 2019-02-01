@@ -1149,14 +1149,17 @@ int32_t PortManager::SetPortProperty(
     HDCP_FUNCTION_ENTER;
 
     // This ias_env  will be used to determine running with IAS or not
-    char *ias_env = getenv("XDG_RUNTIME_DIR");
+    char *ias_env = NULL;
+    ias_env = getenv("XDG_RUNTIME_DIR");
+    int ret = EINVAL;
+    bool retval = false;
     DrmObject *drmObject = GetDrmObjectByDrmId(drmId);
     if (nullptr == drmObject)
     {
         return ENOENT;
     }
 
-    if(ias_env) {
+    if(!ias_env) {
         if (drmSetMaster(m_DrmFd) < 0)
 	{
 	    HDCP_ASSERTMESSAGE("Could not get drm master privilege");
@@ -1164,7 +1167,6 @@ int32_t PortManager::SetPortProperty(
 	}
         // If the size isn't sizeof(uint8_t), it means SRM data, need create blob
 	// then set the blob id by drmModeConnectorSetProperty
-	int ret = EINVAL;
 	uint32_t propValue;
 	if (sizeof(uint8_t) != size)
 	{
@@ -1204,7 +1206,12 @@ int32_t PortManager::SetPortProperty(
     }
     else
     {
-        util_set_content_protection(drmId, *value);
+        retval = util_set_content_protection(drmId, *value);
+	if (true != retval)
+	{
+	    HDCP_ASSERTMESSAGE("Could not set content protection");
+	    return ERROR;
+	}
     }
 
     HDCP_FUNCTION_EXIT(SUCCESS);

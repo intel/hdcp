@@ -109,17 +109,26 @@ void util_destroy_display(EGLNativeDisplayType display)
 
 }
 
-void util_set_content_protection(int crtc, int cp)
+bool util_set_content_protection(int crtc, int cp)
 {
-	if(stage != CREATE_DISPLAY_DONE) {
+
+        bool retval = false;
+
+        if(stage != CREATE_DISPLAY_DONE) {
 		cerr<<"Must call util_create_display first"<<endl;
-		return;
+		return retval;
 	}
 
 	if(!gwl) {
 		cerr<<"Global Wayland class not registered"<<endl;
-		return;
+		return retval;
 	}
 
-	gwl->set_content_protection(crtc, cp);
+	retval = gwl->set_content_protection(crtc, cp);
+	if (retval != true)
+	{
+	    cerr<<"Failed to set content protection and ret value =%0x"<<retval<<endl;
+	    return retval;
+	}
+        return true;
 }

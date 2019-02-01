@@ -39,7 +39,7 @@ extern "C" {
 
 EGLNativeDisplayType    util_create_display(int screen);
 void                    util_destroy_display(EGLNativeDisplayType display);
-void                    util_set_content_protection(int crtc, int cp);
+bool                    util_set_content_protection(int crtc, int cp);
 
 
 #ifdef __cplusplus
