@@ -40,6 +40,7 @@ add_executable(${PROJECT_NAME}
     port.cpp
     srm.cpp
     portmanager.cpp
+    display_window_util_wl.cpp
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE ${HDCP_CXX_FLAGS})

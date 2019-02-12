@@ -394,7 +394,7 @@ void HdcpDaemon::GetStatus(SocketData& data)
 
     int32_t sts = PortManagerGetStatus(
                         data.SinglePort.Id,
-                        &data.SinglePort.Status);
+                        &data.SinglePort.status);
     if (SUCCESS != sts)
     {
         switch (sts)
