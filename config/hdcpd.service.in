@@ -3,7 +3,7 @@ Description=hdcp daemon
 
 [Service]
 Type=simple
-ExecStart=@CMAKE_INSTALL_BINDIR@/hdcpd
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/hdcpd
 
 [Install]
 WantedBy=multi-user.target
