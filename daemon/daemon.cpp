@@ -168,10 +168,15 @@ void HdcpDaemon::DispatchCommand(
 
         case HDCP_API_GETKSVLIST:
             HDCP_NORMALMESSAGE("daemon received 'GetKsvList' request");
-            // No need to send reponse after the function call,
+            // No need to send response after success function call,
             // since this function already done the communication itself.
+            // For unsuccess call, no response sent as break out,
+            // need do it after this function call.
             GetKsvList(data, appId);
-            sendResponse = false;
+            if (HDCP_STATUS_SUCCESSFUL == data.Status)
+            {
+                sendResponse = false;
+            }
             break;
 
         case HDCP_API_SENDSRMDATA:
