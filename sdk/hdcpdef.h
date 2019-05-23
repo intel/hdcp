@@ -32,6 +32,10 @@
 #include <cerrno>
 #include <time.h>
 
+#ifdef ANDROID
+#include <log/log.h>
+#endif
+
 #define SRM_MIN_LENGTH  8
 
 #ifdef SUCCESS
@@ -112,6 +116,7 @@ extern FILE* dmLog;
 ///////////////////////////////////////////////////////////////////////////////
 #if defined(LOG_CONSOLE)
 
+#ifndef ANDROID
 #define DAEMON_LOG(fmt, args...) \
     printf("%s:%d: " fmt "\n", __FUNCTION__, __LINE__, ##args)
 
@@ -148,6 +153,44 @@ extern FILE* dmLog;
 #define HDCP_LINK_FUNCTION_ENTER
 #define HDCP_LINK_FUNCTION_EXIT(_r)
 #endif
+
+#else // =========== ANDROID ===========
+
+#define HDCP_ASSERTMESSAGE(_message, ...) \
+    ALOGE("%s:%d:ERROR: " _message, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#define HDCP_WARNMESSAGE(_message, ...) \
+    ALOGW("%s:%d:WARN: " _message, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#define HDCP_NORMALMESSAGE(_message, ...) \
+    ALOGI("%s:%d:INFO: " _message, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+
+#ifdef HDCP_USE_VERBOSE_LOGGING
+// This is selectively enabled for debugging gmbus/dpaux failures which spit
+// out tons of generally useless information
+#define HDCP_VERBOSEMESSAGE(_message, ...) \
+    ALOGV("%s:%d:VERBOSE: " _message, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#else
+#define HDCP_VERBOSEMESSAGE(_message, ...)
+#endif
+
+#ifdef HDCP_USE_FUNCTION_LOGGING
+#define HDCP_FUNCTION_ENTER \
+    ALOGV("ENTER    - %s", __FUNCTION__);
+#define HDCP_FUNCTION_EXIT(_r) \
+    ALOGV("EXIT     - %s: ret = 0x%x", __FUNCTION__, _r);
+#else
+#define HDCP_FUNCTION_ENTER
+#define HDCP_FUNCTION_EXIT(_r)
+#endif
+
+#ifdef HDCP_USE_LINK_FUNCTION_LOGGING
+#define HDCP_LINK_FUNCTION_ENTER        HDCP_FUNCTION_ENTER
+#define HDCP_LINK_FUNCTION_EXIT(_r)     HDCP_FUNCTION_EXIT(_r)
+#else
+#define HDCP_LINK_FUNCTION_ENTER
+#define HDCP_LINK_FUNCTION_EXIT(_r)
+#endif
+
+#endif // =========== ANDROID ==========
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief  Empty macro definitions for release and non-logging builds

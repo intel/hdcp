@@ -55,7 +55,7 @@ bool AlreadyRunning()
                 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0)
     {
-        HDCP_ASSERTMESSAGE("Could not open pid file : %s\n", pidFile.c_str());
+        HDCP_ASSERTMESSAGE("Could not open pid file : %s", pidFile.c_str());
         return true;
     }
 
@@ -67,7 +67,7 @@ bool AlreadyRunning()
 
     if (fcntl(fd, F_SETLK, &fl) < 0)
     {
-        HDCP_ASSERTMESSAGE("Could not lock pid file\n");
+        HDCP_ASSERTMESSAGE("Could not lock pid file");
         close(fd);
         return true;
     }
@@ -75,7 +75,7 @@ bool AlreadyRunning()
     std::string pid = std::to_string(getpid());
     if (write(fd, pid.c_str(), pid.length()) < 0)
     {
-        HDCP_ASSERTMESSAGE("Could not write pid file\n");
+        HDCP_ASSERTMESSAGE("Could not write pid file");
         close(fd);
         return true;
     }
@@ -216,7 +216,7 @@ int32_t main(void)
 
     if (AlreadyRunning())
     {
-        HDCP_ASSERTMESSAGE("hdcp aleady already running\n");
+        HDCP_ASSERTMESSAGE("hdcp aleady already running");
         return 1;
     }
 
