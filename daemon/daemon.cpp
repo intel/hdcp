@@ -314,12 +314,12 @@ void HdcpDaemon::EnumeratePorts(SocketData& data)
     int32_t sts = PortManagerEnumeratePorts(data.Ports, data.PortCount);
     if (SUCCESS != sts)
     {
-        HDCP_ASSERTMESSAGE("Enumerate failed\n");
+        HDCP_ASSERTMESSAGE("Enumerate failed");
         data.Status = HDCP_STATUS_ERROR_INTERNAL;
         return;
     }
 
-    HDCP_NORMALMESSAGE("Enumerate successfully\n");
+    HDCP_NORMALMESSAGE("Enumerate successfully");
     data.Status = HDCP_STATUS_SUCCESSFUL;
 
     HDCP_FUNCTION_EXIT(SUCCESS);
@@ -354,7 +354,7 @@ void HdcpDaemon::SetProtectionLevel(SocketData& data, uint32_t appId)
     }
     else
     {
-        HDCP_ASSERTMESSAGE("Invalid protection level!\n");
+        HDCP_ASSERTMESSAGE("Invalid protection level!");
         data.Status = HDCP_STATUS_ERROR_INVALID_PARAMETER;
         return;
     }

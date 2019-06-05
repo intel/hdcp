@@ -336,12 +336,12 @@ VectorRevocationList::VectorRevocationList(
     for (int32_t i = 0; i < m_NumberOfDevices; i++)
     {
         HDCP_VERBOSEMESSAGE(
-                    "Number of devices: %d, checking number of device %d \n",
+                    "Number of devices: %d, checking number of device %d",
                     m_NumberOfDevices,
                     i);
 
         HDCP_VERBOSEMESSAGE(
-                    "RevokeList is %x, %x, %x, %x, %x \n",
+                    "RevokeList is %x, %x, %x, %x, %x",
                     m_KsvArray[i * KSV_SIZE + 4],
                     m_KsvArray[i * KSV_SIZE + 3],
                     m_KsvArray[i * KSV_SIZE + 2],
@@ -398,17 +398,17 @@ bool VectorRevocationList::ContainsKsv(const uint8_t ksv[KSV_SIZE])
             "ERROR: KSV_SIZE doesn't match the explicit expectation"
             "of 5 in the loop below!");
 
-    HDCP_VERBOSEMESSAGE("Start to check RevokeList with BKSV \n");
+    HDCP_VERBOSEMESSAGE("Start to check RevokeList with BKSV");
 
     for (uint32_t i = 0; i < m_NumberOfDevices; i++)
     {
         HDCP_VERBOSEMESSAGE(
-                    "Number of devices: %d, checking number of device %d \n",
+                    "Number of devices: %d, checking number of device %d",
                     m_NumberOfDevices,
                     i);
 
         HDCP_VERBOSEMESSAGE(
-                    "RevokeList is %x, %x, %x, %x, %x \n",
+                    "RevokeList is %x, %x, %x, %x, %x",
                     m_KsvArray[i * KSV_SIZE + 4],
                     m_KsvArray[i * KSV_SIZE + 3],
                     m_KsvArray[i * KSV_SIZE + 2],
@@ -416,7 +416,7 @@ bool VectorRevocationList::ContainsKsv(const uint8_t ksv[KSV_SIZE])
                     m_KsvArray[i * KSV_SIZE + 0]);
 
         HDCP_VERBOSEMESSAGE(
-                    "BKSV to check is %x, %x, %x, %x, %x \n",
+                    "BKSV to check is %x, %x, %x, %x, %x",
                     ksv[0],
                     ksv[1],
                     ksv[2],

@@ -22,17 +22,23 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
+# For ALOGV and enter/exit log, set ENABLE_DEBUG=1 during compilation e.g. mm ENABLE_DEBUG=1 -j32
 LOCAL_CPPFLAGS += \
-        -DANDROID \
-        -DANDROID_VERSION=800 \
-        -DHDCP_LOG_TAG="\"HDCP_SDK\"" \
+    -DANDROID \
+    -DANDROID_VERSION=800 \
+    -DLOG_TAG=\"HDCPSDK\"
 
+# LOG_CONSOLE will print ALOGI, ALOGE, ALOGW in Android. Enable on debug build
+ifeq ($(TARGET_BUILD_VARIANT),userdebug)
+LOCAL_CPPFLAGS += -DLOG_CONSOLE
+endif
+
+# For ALOGV and function enter/exit log, set ENABLE_DEBUG=1 during compilation e.g. mm ENABLE_DEBUG=1 -j32
 ifeq ($(ENABLE_DEBUG),1)
-    LOCAL_CPPFLAG += \
-        -DLOG_CONSOLE \
-        -DHDCP_USE_VERBOSE_LOGGING \
-        -DHDCP_USE_FUNCTION_LOGGING \
-        -DHDCP_USE_LINK_FUNCTION_LOGGING
+LOCAL_CPPFLAGS += \
+    -DHDCP_USE_VERBOSE_LOGGING \
+    -DHDCP_USE_FUNCTION_LOGGING \
+    -DHDCP_USE_LINK_FUNCTION_LOGGING
 endif
 
 #WA
