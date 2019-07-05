@@ -239,6 +239,8 @@ int32_t SrmTable::VerifySignature(
 
     if(DSA_SUCCESS != DSA_set0_pqg(dsa, p, q, g)) 
     {
+       DSA_free(dsa);
+       DSA_SIG_free(sig);
        BN_free(p);
        BN_free(q);
        BN_free(g);
@@ -260,6 +262,8 @@ int32_t SrmTable::VerifySignature(
 
     if(DSA_SUCCESS != DSA_set0_key(dsa, pub_key, nullptr)) 
     {
+        DSA_free(dsa);
+        DSA_SIG_free(sig);
         BN_free(pub_key);
         return EINVAL;
     }
@@ -269,6 +273,8 @@ int32_t SrmTable::VerifySignature(
 
     if(DSA_SUCCESS != DSA_SIG_set0(sig, r, s)) 
     {
+        DSA_free(dsa);
+        DSA_SIG_free(sig);
         BN_free(r);
         BN_free(s);
         return EINVAL;
