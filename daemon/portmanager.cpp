@@ -1304,9 +1304,11 @@ int32_t PortManager::GetDownstreamInfo(
     auto blobInfo = drmModeGetPropertyBlob(
                                 m_DrmFd,
                                 blobId);
-    if (nullptr == blobInfo)
+    if (!blobInfo || !blobInfo->data)
     {
         HDCP_ASSERTMESSAGE("Failed to get downstream info blob");
+        if (blobInfo)
+            drmModeFreePropertyBlob(blobInfo);
         drmModeFreeObjectProperties(properties); 
         return EBUSY;
     }
