@@ -303,7 +303,11 @@ int32_t PortManagerInit(HdcpDaemon& socket)
         return EEXIST;
     }
 
+#ifdef ANDROID
+    portMgr = new (std::nothrow) PortManagerHWComposer(socket);
+#else
     portMgr = new (std::nothrow) PortManager(socket);
+#endif
     if (nullptr == portMgr)
     {
         HDCP_ASSERTMESSAGE("Failed to allocate the port manager!");
@@ -857,16 +861,16 @@ int32_t PortManager::DisablePort(const uint32_t portId, const uint32_t appId)
     if (SUCCESS != ret)
     {
         HDCP_ASSERTMESSAGE(
-                    "Failed to enable port with id %d, set property faild",
+                    "Failed to disable port with id %d, set property faild",
                     portId);
         return EBUSY;
     }
 
-    // Check whether Content Protection property is CP_OFF or not 
+    // Check whether Content Protection property is CP_OFF or not
     drmObject->CpTypeAtomicBegin();
     uint8_t cpType = CP_TYPE_INVALID;
     ret = GetProtectionInfo(drmObject, &cpValue, &cpType);
-    if (SUCCESS != ret) 
+    if (SUCCESS != ret)
     {
         drmObject->CpTypeAtomicEnd();
         HDCP_ASSERTMESSAGE("Failed to get protection info");
@@ -1144,7 +1148,7 @@ int32_t PortManager::SetPortProperty(
                             int32_t propId,
                             int32_t size,
                             const uint8_t *value,
-                            const uint32_t numRetry)
+                            uint32_t numRetry)
 {
     HDCP_FUNCTION_ENTER;
 
@@ -1348,3 +1352,96 @@ DrmObject *PortManager::GetDrmObjectByDrmId(const uint32_t drmId)
     return nullptr;
 }
 
+#ifdef ANDROID
+PortManagerHWComposer::PortManagerHWComposer(HdcpDaemon& daemonSocket) :
+                                        PortManager(daemonSocket)
+{
+    HDCP_FUNCTION_ENTER;
+
+    HDCP_FUNCTION_EXIT(SUCCESS);
+}
+
+int32_t PortManagerHWComposer::SetPortProperty(
+                            int32_t drmId,
+                            int32_t propId,
+                            int32_t size,
+                            const uint8_t *value,
+                            uint32_t numRetry)
+{
+    HDCP_FUNCTION_ENTER;
+
+    int32_t ret = EINVAL;
+
+    DrmObject *drmObject = GetDrmObjectByDrmId(drmId);
+    if (nullptr == drmObject)
+    {
+        HDCP_ASSERTMESSAGE("Port drm object found to be nullptr");
+        return ENOENT;
+    }
+
+    if (nullptr == value)
+    {
+        HDCP_ASSERTMESSAGE("Prop value found to be nullptr");
+        return ENOENT;
+    }
+
+    uint8_t propValue = *value;
+
+    android::ProcessState::initWithDriver(BINDER_IPC);
+
+    // Connect to HWC service
+    HWCSHANDLE hwcs = HwcService_Connect();
+    if (nullptr == hwcs)
+    {
+        HDCP_ASSERTMESSAGE("Could not connect to hwcservice");
+        return EINVAL;
+    }
+
+    while (numRetry--)
+    {
+        if (propId == drmObject->GetPropertyId(CONTENT_PROTECTION) &&
+            propValue == CP_OFF)
+        {
+            HDCP_NORMALMESSAGE("Set content protection property (off) via HWC");
+            ret = HwcService_Video_DisableHDCPSession_ForDisplay(hwcs, drmId);
+        }
+        else if (propId == drmObject->GetPropertyId(CONTENT_PROTECTION))
+        {
+            HDCP_NORMALMESSAGE("Set content protection property (on) via HWC");
+            ret = HwcService_Video_EnableHDCPSession_ForDisplay(hwcs, drmId,
+                                                (EHwcsContentType)propValue);
+        }
+        else if (propId == drmObject->GetPropertyId(CP_CONTENT_TYPE))
+        {
+            // This is only for HDCP2.2
+            HDCP_NORMALMESSAGE("Set content type property via HWC");
+            ret = HwcService_Video_EnableHDCPSession_ForDisplay(hwcs, drmId,
+                                                (EHwcsContentType)propValue);
+        }
+        else if(propId == drmObject->GetPropertyId(CP_SRM))
+        {
+            HDCP_NORMALMESSAGE("Set SRM for Display");
+            ret = HwcService_Video_SetHDCPSRM_ForDisplay(hwcs, drmId,
+                                                (const int8_t *)&value, size);
+        }
+        else
+        {
+            HDCP_ASSERTMESSAGE("Property id not supported");
+            ret = EINVAL;
+        }
+
+        if (SUCCESS == ret)
+            break;
+    }
+
+    HwcService_Disconnect(hwcs);
+
+    if (SUCCESS != ret)
+    {
+        HDCP_ASSERTMESSAGE("Failed to set port property via HWC");
+    }
+
+    HDCP_FUNCTION_EXIT(ret);
+    return ret;
+}
+#endif

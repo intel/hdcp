@@ -35,6 +35,16 @@
 #include "hdcpapi.h"
 #include "port.h"
 
+#ifdef ANDROID
+#include <hwcserviceapi.h>
+#include <log/log.h>
+#include <binder/IServiceManager.h>
+#include <binder/ProcessState.h>
+#include <iservice.h>
+
+#define BINDER_IPC          "/dev/vndbinder"
+#endif
+
 #define THREAD_STARTUP_BACKOFF_DELAY_US     100
 #define AUTH_CHECK_DELAY_MS                 1000
 #define INTEGRITY_CHECK_DELAY_MS            500
@@ -109,14 +119,14 @@ public:
     PortManager(HdcpDaemon& daemonSocket);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// \brief  Destructor for PortManager
+    /// \brief  Virtual destructor for PortManager
     ///
     /// \return     nothing -- It's a destructor
     ///
     /// This will cleanup any ports currently in the port list
     /// Any dynamic memory controlled by the PortManager should be released
     ///////////////////////////////////////////////////////////////////////////
-    ~PortManager(void);
+    virtual ~PortManager(void);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief  Checks if the portmanager was successfully created
@@ -215,7 +225,7 @@ public:
     void DisableAllPorts();
 
     // Declare private functions
-private:
+protected:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief  Get DrmObject by port Id
@@ -247,7 +257,10 @@ private:
                         uint8_t *cpType);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// \brief  Set Port Property
+    /// \brief  Virtual function set port property. By default, port property is
+    ///         set through drm ioctl call. On ClearLinux, port property is set
+    ///         through IAS. On Andorid, port property is set through Hardware
+    ///         Composer.
     ///
     /// \param[in]  drmId,      Id of the drm object
     /// \param[in]  propertyId, Id of property
@@ -256,7 +269,7 @@ private:
     /// \param[in]  numRetry,   the retry times
     /// \return     int32_t     Function return status
     ///////////////////////////////////////////////////////////////////////////
-    int32_t SetPortProperty(
+    virtual int32_t SetPortProperty(
                         int32_t drmId,
                         int32_t propertyId,
                         int32_t size,
@@ -278,9 +291,46 @@ private:
     /// \return     int32_t     Function return status
     ///////////////////////////////////////////////////////////////////////////
     int32_t InitDrmObjects();
-    
+
     static void SigCatcher(int sig);
 };
+
+#ifdef ANDROID
+class PortManagerHWComposer : public PortManager
+{
+public:
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief  Constructor for the PortManagerHWComposer class,
+    ///         this is for Android platform.
+    ///
+    /// \return     Nothing
+    ///
+    /// Callers must check the newly created manager against IsValid.
+    ///////////////////////////////////////////////////////////////////////////
+    PortManagerHWComposer(HdcpDaemon& daemonSocket);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief  Virtual function set port property. By default, port property is
+    ///         set through drm ioctl call. On ClearLinux, port property is set
+    ///         through IAS. On Andorid, port property is set through Hardware
+    ///         Composer.
+    ///
+    /// \param[in]  drmId,      Id of the drm object
+    /// \param[in]  propertyId, Id of property
+    /// \param[in]  size,       Length of value, it's an array
+    /// \param[in]  value,      Pointer of the array
+    /// \param[in]  numRetry,   the retry times
+    /// \return     int32_t     Function return status
+    ///////////////////////////////////////////////////////////////////////////
+    virtual int32_t SetPortProperty(
+                        int32_t drmId,
+                        int32_t propertyId,
+                        int32_t size,
+                        const uint8_t *value,
+                        uint32_t numRetry);
+};
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief  Create the local instance of the PortManager
