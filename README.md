@@ -82,25 +82,24 @@ This will install the following files (e.g. on Ubuntu):
 
 APL (Apollolake)    for HDCP1.4
 
-KBL (Kabylake)      for HDCP1.4
+KBL (Kabylake)      for HDCP1.4 and HDCP2.2
 
 GLK (Geminilake)    for HDCP1.4 and HDCP2.2
 
 
 ## Known Issues and Limitations
 
-1.  KBL: Blank screen after enabling HDCP 2.2. This is a known issue on KBL hardware.
-2.  APIs currently supported by drm-tip kernel (https://github.com/freedesktop/drm-tip, upstream in progress) :
+1.  APIs currently supported by drm-tip kernel (https://github.com/freedesktop/drm-tip) :
 ```
         HDCPCreate
         HDCPDestroy
         HDCPEnumerateDisplay
         HDCPSetProtectionLevel for HDCP_LEVEL0/HDCP_LEVEL1
         HDCPGetStatus
+        HDCPSetProtectionLevel for HDCP_LEVEL2
 ```
     APIs tested internally but not supported by drm-tip kernel :
 ```
-        HDCPSetProtectionLevel for HDCP_LEVEL2
         HDCPGetKsvList
         HDCPSendSRMData
         HDCPGetSRMVersion
