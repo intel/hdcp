@@ -595,12 +595,6 @@ void HdcpDaemon::Config(SocketData& data)
 {
     HDCP_FUNCTION_ENTER;
 
-    if (data.Config.type != data.Config.type)
-    {
-        data.Status = HDCP_STATUS_ERROR_INTERNAL;
-        return;
-    }
-
     int32_t sts = SrmConfig(data.Config.disableSrmStorage);
     if (SUCCESS != sts)
     {

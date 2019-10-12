@@ -46,6 +46,9 @@
 
 #define SRM_FIRST_GEN_MAX_SIZE  5116    // From HDCP HDMI spec
 
+//KMD reads SRM from this FW file then do HDCP revocation check
+#define DISPLAY_SRM_STORAGE_FILE "/lib/firmware/display_hdcp_srm.bin"
+
 typedef struct _SrmHeader
 {
     union

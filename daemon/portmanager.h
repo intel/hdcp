@@ -62,10 +62,9 @@
 #define CP_TYPE_1           1
 
 //KMD property name
-#define CONTENT_PROTECTION          "Content Protection" 
-#define CP_CONTENT_TYPE             "CP_Content_Type" 
-#define CP_DOWNSTREAM_INFO          "CP_Downstream_Info" 
-#define CP_SRM                      "CP_SRM" 
+#define CONTENT_PROTECTION          "Content Protection"
+#define CP_CONTENT_TYPE             "HDCP Content Type"
+#define CP_DOWNSTREAM_INFO          "CP_Downstream_Info"
 
 typedef struct _DownstreamInfo
 {
@@ -194,7 +193,7 @@ public:
                     uint8_t *ksvList);
 
     ///////////////////////////////////////////////////////////////////////////
-    /// \brief  Send the SRM Data to the topology
+    /// \brief  Store the SRM Data to fw file
     ///
     /// \param[in]   portId,  Port Id on which to get ksv list
     /// \param[out]  ksvCount, the number of KSVs in the topology
@@ -413,7 +412,7 @@ int32_t PortManagerGetKsvList(
                         uint8_t *ksvList);
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief  Send SRM Data to the topology
+/// \brief  Send SRM Data to the fw file
 ///
 ///////////////////////////////////////////////////////////////////////////////
 int32_t PortManagerSendSRMDdata(const uint8_t *data, const uint32_t size);

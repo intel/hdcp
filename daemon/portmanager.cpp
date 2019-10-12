@@ -621,7 +621,6 @@ int32_t PortManager::InitDrmObjects()
 
             if (CONTENT_PROTECTION == prop_name ||
                 CP_CONTENT_TYPE == prop_name    ||
-                CP_SRM == prop_name             ||
                 CP_DOWNSTREAM_INFO == prop_name)
             {
                 DrmObject *drmObject = GetDrmObjectByDrmId(res->connectors[i]);
@@ -807,7 +806,7 @@ int32_t PortManager::EnablePort(
     {
         drmObject->CpTypeAtomicEnd();
         HDCP_ASSERTMESSAGE(
-                    "Failed to enable port with id %d, check proerty failed",
+                    "Failed to enable port with id %d, check property failed",
                     portId);
         return EBUSY;
     }
@@ -997,22 +996,44 @@ int32_t PortManager::SendSRMData(const uint8_t *data, const uint32_t size)
 {
     HDCP_FUNCTION_ENTER;
 
-    for (auto drmObject : m_DrmObjects)
+    CHECK_PARAM_NULL(data, EINVAL);
+
+    //Write srm data into fw file
+    int32_t ret = -1;
+    size_t total = 0;
+    int fd = open(DISPLAY_SRM_STORAGE_FILE, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR);
+    if (0 > fd)
     {
-        int32_t ret = SetPortProperty(drmObject->GetDrmId(),
-                        drmObject->GetPropertyId(CP_SRM),
-                        size,
-                        data,
-                        1); 
-        if (SUCCESS != ret)
+        HDCP_ASSERTMESSAGE("Could not open file Err: %s!", strerror(errno));
+        return -errno;
+    }
+    do
+    {
+        ret = write(fd, data + total, size - total);
+        if (0 >= ret)
         {
-            HDCP_WARNMESSAGE("Faild to send SRM Data");
-            return ret;
+            if (EINTR == errno || EAGAIN == errno)
+                continue;
+            else
+                break;
         }
+        total += ret;
+    } while(total != size);
+
+    if (total != static_cast<size_t>(size))
+    {
+        HDCP_ASSERTMESSAGE("Failed to write srm to file. Err: %s", strerror(errno));
+        ret = -EIO;
+    }
+    else
+    {
+        ret = SUCCESS;
     }
 
-    HDCP_FUNCTION_EXIT(SUCCESS);
-    return SUCCESS;
+    close(fd);
+
+    HDCP_FUNCTION_EXIT(ret);
+    return ret;
 }
 
 void PortManager::RemoveAppFromPorts(const uint32_t appId)
