@@ -65,6 +65,7 @@
 #define CONTENT_PROTECTION          "Content Protection"
 #define CP_CONTENT_TYPE             "HDCP Content Type"
 #define CP_DOWNSTREAM_INFO          "CP_Downstream_Info"
+#define CP_SRM                      "CP_SRM"
 
 typedef struct _DownstreamInfo
 {
