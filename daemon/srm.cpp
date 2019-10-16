@@ -44,7 +44,7 @@
 
 // Add compatibility layer for openssl 1.0 as suggested by openssl
 // https://wiki.openssl.org/index.php/OpenSSL_1.1.0_Changes#Compatibility_Layer
-#if OPENSSL_VERSION_NUMBER < 0x10100000
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 int32_t DSA_set0_pqg(DSA *d, BIGNUM *p, BIGNUM *q, BIGNUM *g)
 {
     // If the fields p, q and g in d are nullptr, the corresponding input
@@ -271,7 +271,8 @@ int32_t SrmTable::VerifySignature(
     r = BN_bin2bn(pR, DSA_SIG_LENGTH, nullptr);
     s = BN_bin2bn(pS, DSA_SIG_LENGTH, nullptr);
 
-    if(DSA_SUCCESS != DSA_SIG_set0(sig, r, s)) 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    if(DSA_SUCCESS != DSA_SIG_set0(sig, r, s))
     {
         DSA_free(dsa);
         DSA_SIG_free(sig);
@@ -279,7 +280,7 @@ int32_t SrmTable::VerifySignature(
         BN_free(s);
         return EINVAL;
     }
-    
+#endif
     uint8_t md[SHA_DIGEST_LENGTH];
     uint32_t result = DSA_do_verify(
                     SHA1(pMsg, msgLen, md),
