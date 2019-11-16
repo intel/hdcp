@@ -51,13 +51,13 @@ EGLNativeDisplayType util_create_display(int screen)
 	EGLNativeDisplayType ret = 0;
 	void *init;
 
-        lib_hdl = dlopen(IAS_WL_LIBNAME, RTLD_LAZY | RTLD_GLOBAL);
+	lib_hdl = dlopen(IAS_WL_LIBNAME, RTLD_LAZY | RTLD_GLOBAL);
 	if(!lib_hdl) {
 		cerr<<"Couldn't open lib "<<IAS_WL_LIBNAME<<endl;
 		return 0;
-        }
+	}
 
-        /* Find init symbol */
+	/* Find init symbol */
 	init = dlsym(lib_hdl, "init");
 	if(!init) {
 		cerr<<"Couldn't open symbol init dlerror "<<dlerror()<<endl;
@@ -76,14 +76,14 @@ EGLNativeDisplayType util_create_display(int screen)
 	/* Call class's function */
 	ret = gwl->init();
 	if(ret == 0) {
-               cerr<<"WL base Class init is failed"<<endl;
-               dlclose(lib_hdl);
-               return 0;
-        }
+		cerr<<"WL base Class init is failed"<<endl;
+		dlclose(lib_hdl);
+		return 0;
+	}
 	gwl->add_reg();
 
-        stage = CREATE_DISPLAY_DONE;
-        return ret;
+	stage = CREATE_DISPLAY_DONE;
+	return ret;
 }
 
 void util_destroy_display(EGLNativeDisplayType display)
@@ -112,9 +112,9 @@ void util_destroy_display(EGLNativeDisplayType display)
 bool util_set_content_protection(int crtc, int cp)
 {
 
-        bool retval = false;
+	bool retval = false;
 
-        if(stage != CREATE_DISPLAY_DONE) {
+	if(stage != CREATE_DISPLAY_DONE) {
 		cerr<<"Must call util_create_display first"<<endl;
 		return retval;
 	}
@@ -127,8 +127,8 @@ bool util_set_content_protection(int crtc, int cp)
 	retval = gwl->set_content_protection(crtc, cp);
 	if (retval != true)
 	{
-	    cerr<<"Failed to set content protection and ret value =%0x"<<retval<<endl;
-	    return retval;
+		cerr<<"Failed to set content protection and ret value =%0x"<<retval<<endl;
+		return retval;
 	}
-        return true;
+	return true;
 }
