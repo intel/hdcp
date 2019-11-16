@@ -81,6 +81,7 @@ EGLNativeDisplayType util_create_display(int screen)
 		return 0;
 	}
 	gwl->add_reg();
+	gwl->dispatch_pending();
 
 	stage = CREATE_DISPLAY_DONE;
 	return ret;
