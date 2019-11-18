@@ -86,6 +86,8 @@ KBL (Kabylake)      for HDCP1.4 and HDCP2.2
 
 GLK (Geminilake)    for HDCP1.4 and HDCP2.2
 
+TGL (Tigerlake)     for HDCP1.4 and HDCP2.2
+
 
 ## Known Issues and Limitations
 
