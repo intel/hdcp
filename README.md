@@ -14,8 +14,12 @@ https://opensource.org/licenses/MIT
 
 ## Prerequisites
 
-For Ubuntu 16.04 and above
-\# sudo apt-get install cmake autoconf libdrm-dev libssl-dev
+For Ubuntu 16.04 and above:
+
+```sh
+sudo apt-get install cmake autoconf libdrm-dev libssl-dev
+```
+
 Equivalents for other distributions should work.
 
 
