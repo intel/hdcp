@@ -36,6 +36,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <iostream>
+#include <sys/wait.h>
 
 #include "hdcpdef.h"
 #include "srm.h"
@@ -93,6 +94,8 @@ int32_t daemon_init(void)
     }
     else if (pid != 0)
     {
+        int status;
+        wait(&status);
         exit(SUCCESS);    // parent exit
     }
 
