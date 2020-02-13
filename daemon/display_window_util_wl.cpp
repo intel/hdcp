@@ -22,6 +22,7 @@
 #include <string.h>
 #include <list>
 #include <stdlib.h>
+#include <errno.h>
 
 /* IAS Wayland library for IPC calls from hdcpd to IAS compositor *
  * need to set LD_LIBRARY_PATH if library is not in standard path *
@@ -76,7 +77,7 @@ EGLNativeDisplayType util_create_display(int screen)
 	/* Call class's function */
 	ret = gwl->init();
 	if(ret == 0) {
-		cerr<<"WL base Class init is failed"<<endl;
+		cerr<<"WL base Class init is failed "<< errno << endl;
 		dlclose(lib_hdl);
 		return 0;
 	}
