@@ -970,7 +970,7 @@ int32_t PortManager::GetKsvList(
     DownstreamInfo dsInfo;
     int32_t ret = GetDownstreamInfo(
                             GetDrmObjectByPortId(portId),
-                            (uint8_t *)&dsInfo);
+                            (uint8_t *)&dsInfo.bksv[0]);
     if (SUCCESS != ret)
     {
         HDCP_ASSERTMESSAGE("Faild to get down stream info");
