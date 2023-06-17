@@ -46,7 +46,10 @@
 
 #include "xf86drm.h"
 #include "xf86drmMode.h"
+
+#ifndef ANDROID
 #include "display_window_util.h"
+#endif
 
 #define UEVENT_MSG_SIZE             1024
 
@@ -1229,6 +1232,7 @@ int32_t PortManager::SetPortProperty(
 	    return EBUSY;
 	}
     }
+#ifndef ANDROID
     else
     {
         retval = util_set_content_protection(drmId, *value);
@@ -1238,6 +1242,7 @@ int32_t PortManager::SetPortProperty(
 	    return ERROR;
 	}
     }
+#endif
 
     HDCP_FUNCTION_EXIT(SUCCESS);
     return SUCCESS;

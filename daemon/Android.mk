@@ -62,7 +62,7 @@ LOCAL_SRC_FILES := \
     daemon.cpp \
     port.cpp \
     srm.cpp \
-    portmanager.cpp \
+    portmanager.cpp
 
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH) \
