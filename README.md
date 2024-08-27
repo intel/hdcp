@@ -1,4 +1,4 @@
-DISCONTINUATION OF PROJECT
+PROJECT NOT UNDER ACTIVE MANAGEMENT
 
 This project will no longer be maintained by Intel.
 
@@ -9,6 +9,20 @@ Intel no longer accepts patches to this project.
 If you have an ongoing need to use this project, are interested in independently developing it, or would like to maintain patches for the open source software community, please create your own fork of this project.  
 
 Contact: webadmin@linux.intel.com
+
+> [!NOTE]
+>Intel GPU supports HDCP via Linux KMS UAPIs - [Kernel support for HDCP](https://lwn.net/Articles/740916).
+> 
+>Intel GPU actively maintains HDCP functionalities in Linux Kernel:
+>  
+>drm/i915: [Implement HDCP2.2](https://lwn.net/Articles/748869)
+> 
+>drm/i915: [Add support for HDCP 1.4 over MST](https://lwn.net/Articles/748869)
+> 
+>This repository was a wrapper on these APIs to facilitate other Intel project requirements.    
+
+
+
 # Intel(R) unified HDCP
 
 
