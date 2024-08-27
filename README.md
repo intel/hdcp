@@ -17,7 +17,7 @@ Contact: webadmin@linux.intel.com
 >  
 >drm/i915: [Implement HDCP2.2](https://lwn.net/Articles/748869)
 > 
->drm/i915: [Add support for HDCP 1.4 over MST](https://lwn.net/Articles/748869)
+>drm/i915: [Add support for HDCP 1.4 over MST](https://lwn.net/Articles/824310/)
 > 
 >This repository was a wrapper on these APIs to facilitate other Intel project requirements.    
 
